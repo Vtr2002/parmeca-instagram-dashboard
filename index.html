@@ -6,7 +6,7 @@
 <title>Instagram · Parmeca</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Space+Mono:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #170D0A;
@@ -30,13 +30,13 @@
     margin: 0;
     background: var(--bg);
     color: var(--cream);
-    font-family: 'Poppins', 'Avenir Next', sans-serif;
+    font-family: 'Avenir Next', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     position: relative;
     overflow-x: hidden;
   }
 
-  .mono { font-family: 'Space Mono', monospace; font-variant-numeric: tabular-nums; }
+  .mono { font-variant-numeric: tabular-nums; font-weight: 600; }
   .serif { font-family: 'Young Serif', serif; font-weight: 400; }
 
   /* ---------- Fundo decorativo: pontes/arcos ---------- */
@@ -53,16 +53,16 @@
   header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-bottom: 24px; }
   header .title-block { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
   header h1 { font-family: 'Young Serif', serif; font-size: 26px; color: var(--cream); }
-  header .tag { color: var(--muted-dark); font-size: 12px; font-family: 'Space Mono', monospace; }
+  header .tag { color: var(--muted-dark); font-size: 12px; font-weight: 500; }
   .header-right { display: flex; align-items: center; gap: 14px; }
-  .last-updated { font-size: 11px; color: var(--muted-dark); font-family: 'Space Mono', monospace; }
+  .last-updated { font-size: 11px; color: var(--muted-dark); font-weight: 500; }
 
   .btn-refresh {
     display: inline-flex; align-items: center; gap: 8px;
     background: var(--coral); color: var(--bg);
     border: none; border-radius: 999px;
     padding: 10px 18px; font-size: 13px; font-weight: 600;
-    cursor: pointer; font-family: 'Poppins', sans-serif;
+    cursor: pointer; font-family: 'Avenir Next', system-ui, sans-serif;
     transition: transform 0.15s ease, box-shadow 0.2s ease;
   }
   .btn-refresh:hover { box-shadow: 0 6px 20px rgba(220,103,86,0.35); transform: translateY(-1px); }
@@ -96,7 +96,6 @@
   @media (max-width: 900px) { .span-4 { grid-column: span 2; } }
   @media (max-width: 560px) { .span-2, .span-4 { grid-column: span 1; } }
 
-  /* floating: qualquer card ganha leve elevação flutuante quando ativo/selecionado */
   @keyframes floatUp {
     0% { transform: translateY(0); }
     50% { transform: translateY(-6px); }
@@ -106,22 +105,22 @@
 
   /* ---------- Hero (seguidores) ---------- */
   .hero-card { display: flex; flex-direction: column; justify-content: space-between; min-height: 220px; }
-  .hero-label { font-size: 13px; color: var(--brick); opacity: 0.65; margin-bottom: 4px; }
-  .hero-number { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 56px; line-height: 1; color: var(--brick); }
-  .hero-delta { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 12px; font-family: 'Space Mono', monospace; color: var(--red-deep); }
+  .hero-label { font-size: 13px; color: var(--brick); opacity: 0.65; margin-bottom: 4px; font-weight: 600;}
+  .hero-number { font-weight: 700; font-size: 56px; line-height: 1; color: var(--brick); }
+  .hero-delta { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--red-deep); }
   #sparkline { width: 100%; height: 74px; display: block; margin-top: 12px; }
 
   /* ---------- Mini stat chips ---------- */
   .ministat { display: flex; flex-direction: column; justify-content: center; min-height: 100px; }
-  .ministat .m-label { font-size: 11px; opacity: 0.8; margin-bottom: 4px; }
-  .ministat .m-value { font-family: 'Space Mono', monospace; font-weight: 700; font-size: 26px; }
+  .ministat .m-label { font-size: 11px; opacity: 0.8; margin-bottom: 4px; font-weight: 600;}
+  .ministat .m-value { font-weight: 700; font-size: 26px; }
 
   /* ---------- Metas / gauges ---------- */
   .goals-card { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
   .goal-block { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 150px; }
-  .gauge-label { font-size: 12px; color: var(--muted-dark); margin-bottom: 3px; }
-  .gauge-value { font-family: 'Space Mono', monospace; font-size: 19px; color: var(--cream); }
-  .gauge-status { font-size: 11px; margin-top: 3px; color: var(--coral); font-family: 'Space Mono', monospace; }
+  .gauge-label { font-size: 12px; color: var(--muted-dark); margin-bottom: 3px; font-weight: 600;}
+  .gauge-value { font-size: 19px; color: var(--cream); }
+  .gauge-status { font-size: 11px; margin-top: 3px; color: var(--coral); font-weight: 600; }
 
   /* ---------- Comparação ---------- */
   .card-title { font-size: 18px; font-family: 'Young Serif', serif; margin-bottom: 4px; color: var(--cream); }
@@ -132,13 +131,13 @@
   .chip-btn {
     background: transparent; border: 1px solid var(--line-dark-strong); color: var(--cream);
     border-radius: 999px; padding: 7px 14px; font-size: 12px; cursor: pointer;
-    font-family: 'Poppins', sans-serif; transition: all 0.15s ease;
+    font-family: 'Avenir Next', system-ui, sans-serif; font-weight: 600; transition: all 0.15s ease;
   }
   .chip-btn:hover, .chip-btn.active { background: var(--coral); color: var(--bg); border-color: var(--coral); }
 
   .date-range-inputs { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; font-size: 12px; color: var(--muted-dark); }
   .date-range-inputs input[type="date"] {
-    font-family: 'Space Mono', monospace; font-size: 12px;
+    font-family: 'Avenir Next', system-ui, sans-serif; font-size: 12px;
     border: 1px solid var(--line-dark-strong); border-radius: 6px; padding: 5px 8px;
     background: var(--bg-soft); color: var(--cream);
   }
@@ -146,26 +145,24 @@
   .compare-summary { font-size: 14px; line-height: 1.65; margin-bottom: 18px; color: var(--cream); }
 
   .compare-table { width: 100%; border-collapse: collapse; }
-  .compare-table th { text-align: left; font-size: 11px; color: var(--muted-dark); font-weight: 500; padding-bottom: 8px; border-bottom: 1px solid var(--line-dark-strong); }
+  .compare-table th { text-align: left; font-size: 11px; color: var(--muted-dark); font-weight: 600; padding-bottom: 8px; border-bottom: 1px solid var(--line-dark-strong); }
   .compare-table td { padding: 10px 0; border-bottom: 1px solid var(--line-dark); font-size: 14px; }
   .compare-table td.metric-name { color: var(--muted-dark); }
-  .compare-table td.val { font-family: 'Space Mono', monospace; text-align: right; }
+  .compare-table td.val { font-weight: 600; text-align: right; }
   .delta { display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; font-size: 11px; }
   .tri-up { color: var(--coral); }
   .tri-down { color: var(--muted-dark); }
 
   /* ---------- Anomalia ---------- */
-  .anomaly-banner {
-    display: none; border-radius: 16px; padding: 16px 20px; font-size: 13px; color: var(--cream);
-  }
+  .anomaly-banner { display: none; border-radius: 16px; padding: 16px 20px; font-size: 13px; color: var(--cream); }
   .anomaly-banner.show { display: block; }
   .anomaly-banner strong { color: var(--coral); }
 
   /* ---------- Heatmap ---------- */
   .heatmap { display: grid; grid-template-columns: 60px repeat(7, 1fr); gap: 4px; }
   .heatmap .hcell { aspect-ratio: 1; border-radius: 6px; }
-  .heatmap .hlabel { font-size: 10px; color: var(--muted-dark); display: flex; align-items: center; font-family: 'Space Mono', monospace; }
-  .heatmap .daylabel { font-size: 10px; color: var(--muted-dark); text-align: center; font-family: 'Space Mono', monospace; padding-bottom: 4px; }
+  .heatmap .hlabel { font-size: 10px; color: var(--muted-dark); display: flex; align-items: center; font-weight: 600; }
+  .heatmap .daylabel { font-size: 10px; color: var(--muted-dark); text-align: center; font-weight: 600; padding-bottom: 4px; }
   .heatmap-summary { margin-top: 16px; font-size: 13px; line-height: 1.6; color: var(--cream); }
 
   /* ---------- Posts: staging A/B ---------- */
@@ -176,7 +173,7 @@
     min-height: 74px; display: flex; flex-direction: column; justify-content: center;
     transition: border-color 0.25s ease, background 0.25s ease;
   }
-  .staging-slot .slot-tag { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted-dark); margin-bottom: 4px; }
+  .staging-slot .slot-tag { font-weight: 600; font-size: 11px; color: var(--muted-dark); margin-bottom: 4px; }
   .staging-slot .slot-text { font-size: 13px; color: var(--muted-dark); }
   .staging-slot.filled { border-style: solid; border-color: var(--coral); background: var(--card-dark-hover); }
   .staging-slot.filled .slot-text { color: var(--cream); }
@@ -194,17 +191,17 @@
   .post-chip.selected { border-color: var(--coral); }
   .post-chip .p-badge {
     position: absolute; top: -8px; left: 14px;
-    background: var(--coral); color: var(--bg); font-family: 'Space Mono', monospace;
-    font-size: 11px; font-weight: 700; border-radius: 999px; width: 20px; height: 20px;
+    background: var(--coral); color: var(--bg); font-weight: 700;
+    font-size: 11px; border-radius: 999px; width: 20px; height: 20px;
     display: flex; align-items: center; justify-content: center;
   }
-  .post-chip .p-date { font-size: 10px; color: var(--muted-dark); font-family: 'Space Mono', monospace; margin-bottom: 6px; }
+  .post-chip .p-date { font-size: 10px; color: var(--muted-dark); font-weight: 600; margin-bottom: 6px; }
   .post-chip .p-caption {
     font-size: 12px; color: var(--cream); line-height: 1.4;
     overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
     margin-bottom: 8px; min-height: 50px;
   }
-  .post-chip .p-eng { font-size: 13px; font-family: 'Space Mono', monospace; color: var(--coral); }
+  .post-chip .p-eng { font-size: 13px; font-weight: 600; color: var(--coral); }
 
   .compare-hint { display: flex; justify-content: flex-end; margin-bottom: 8px; }
   .clear-selection { font-size: 12px; color: var(--muted-dark); cursor: pointer; text-decoration: underline; }
@@ -219,21 +216,21 @@
   .cmp-posts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
   @media (max-width: 560px) { .cmp-posts { grid-template-columns: 1fr; } }
   .cmp-post-card { background: var(--card-dark); border-radius: 16px; padding: 16px; border-left: 3px solid var(--coral); }
-  .cmp-post-card .p-tag { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--coral); margin-bottom: 4px; }
-  .cmp-post-card .p-date { font-size: 11px; color: var(--muted-dark); font-family: 'Space Mono', monospace; margin-bottom: 6px; }
+  .cmp-post-card .p-tag { font-weight: 600; font-size: 11px; color: var(--coral); margin-bottom: 4px; }
+  .cmp-post-card .p-date { font-size: 11px; color: var(--muted-dark); font-weight: 600; margin-bottom: 6px; }
   .cmp-post-card .p-caption { font-size: 13px; line-height: 1.5; color: var(--cream); }
   .cmp-post-card a { color: var(--cream); }
 
   /* ---------- Stories ---------- */
   .stories-strip { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; }
   .story-chip { flex: 0 0 150px; background: var(--card-dark); border-radius: 16px; padding: 14px; }
-  .story-chip .s-date { font-size: 10px; color: var(--muted-dark); font-family: 'Space Mono', monospace; margin-bottom: 8px; }
-  .story-chip .s-metric { font-size: 11px; color: var(--muted-dark); display: flex; justify-content: space-between; margin-top: 4px; font-family: 'Space Mono', monospace; }
+  .story-chip .s-date { font-size: 10px; color: var(--muted-dark); font-weight: 600; margin-bottom: 8px; }
+  .story-chip .s-metric { font-size: 11px; color: var(--muted-dark); display: flex; justify-content: space-between; margin-top: 4px; font-weight: 500; }
   .story-chip .s-metric b { color: var(--cream); }
 
   .empty { color: var(--muted-dark); font-size: 13px; padding: 16px 0; }
 
-  footer { color: var(--muted-dark); font-size: 11px; border-top: 1px solid var(--line-dark-strong); padding-top: 18px; margin-top: 20px; font-family: 'Space Mono', monospace; text-align: center; }
+  footer { color: var(--muted-dark); font-size: 11px; border-top: 1px solid var(--line-dark-strong); padding-top: 18px; margin-top: 20px; font-weight: 500; text-align: center; }
 
   .error-box {
     border: 1px solid var(--coral); color: var(--coral); padding: 14px 18px;
