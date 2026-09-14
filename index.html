@@ -37,14 +37,13 @@
   .wrap { position: relative; max-width: 95%; margin: 0 auto; padding: 36px 0 100px; }
   h1, h2 { margin: 0; }
 
-  /* Header Moderno com Gradiente Bordô */
   header { 
     display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; 
     padding: 28px 36px; background: linear-gradient(135deg, #641E18 0%, #3B110E 100%); 
     border-radius: 24px; color: #FFF; margin-bottom: 28px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); border: 1px solid rgba(209, 156, 74, 0.3);
   }
-  header h1 { font-family: 'Young Serif', serif; font-size: 34px; color: var(--cream); letter-spacing: 0.5px; }
+  header h1 { font-family: 'Young Serif', serif; font-size: 34px; color: var(--cream); }
   header .tag { color: var(--gold); font-size: 14px; font-weight: 600; }
   .last-updated { font-size: 12px; color: var(--text-muted); font-weight: 600; }
 
@@ -56,7 +55,6 @@
   }
   .btn-refresh:hover { background: #E57867; transform: translateY(-2px); }
 
-  /* Bento Grid */
   .bento { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px; }
   @media (max-width: 1024px) { .bento { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 640px) { .bento { grid-template-columns: 1fr; } }
@@ -64,7 +62,6 @@
   .card {
     border-radius: 24px; padding: 26px; background: var(--card-bg) !important;
     border: 1px solid var(--line); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); color: var(--cream);
-    transition: transform 0.2s ease;
   }
   
   .hero-card { 
@@ -128,7 +125,6 @@
   .staging-slot .slot-text { font-size: 14px; color: var(--cream); font-weight: 500; }
   .staging-slot.filled { border-style: solid; border-color: var(--coral); background: var(--card-hover); }
 
-  /* Posts Grid com Miniaturas e Imagens Reais Garantidas */
   .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
   .post-chip {
     position: relative; background: #170A08; border-radius: 18px; padding: 14px;
@@ -140,12 +136,12 @@
     position: absolute; top: -10px; left: -10px;
     background: var(--coral); color: #FFF; font-weight: 700;
     font-size: 12px; border-radius: 50%; width: 28px; height: 28px;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.4); z-index: 2;
+    display: flex; align-items: center; justify-content: center; z-index: 2;
   }
   .post-thumbnail {
     width: 100%; height: 160px; border-radius: 12px; margin-bottom: 12px;
     background-size: cover; background-position: center; background-color: #3B110E;
+    display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 24px;
   }
   .post-chip .p-date { font-size: 11px; color: var(--gold); font-weight: 700; margin-bottom: 6px; }
   .post-chip .p-caption {
@@ -284,20 +280,13 @@ var STATE = { accountRows: [], posts: [], storiesRows: [], selectedPosts: [], mo
 function fmt(n) { return n == null ? "—" : new Intl.NumberFormat('pt-BR').format(Math.round(n)); }
 function engagementOf(p) { return (p.likes ?? 0) + (p.comments ?? 0) + (p.saved ?? 0) + (p.shares ?? 0); }
 function fmtDate(iso) { return iso ? new Date(iso).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : "—"; }
+function isoDate(d) { return d.toISOString().slice(0, 10); }
 
-// Sistema inteligente de fallback: busca todas as variações possíveis e garante imagem real ou elegante
-function getPostImage(p, index) {
-  var raw = p.media_url || p.image_url || p.thumbnail_url || p.media_thumbnail || p.permalink;
-  if (raw && raw.startsWith('http')) return raw;
-  
-  // Imagens temáticas de alta qualidade para ilustrar os pratos caso o banco não traga o link direto
-  var samples = [
-    'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=400&q=80', // Parmegiana / Massa
-    'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80', // Prato Gourmet
-    'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400&q=80', // Queijo / Molho
-    'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=400&q=80'  // Prato Italiano
-  ];
-  return samples[(index || 0) % samples.length];
+// Tratamento seguro de imagens
+function getPostImage(p) {
+  var url = p.media_url || p.image_url || p.thumbnail_url || p.media_thumbnail;
+  if (url && typeof url === 'string' && url.startsWith('http')) return url;
+  return null; // Retorna nulo para usar ícone estilizado se não houver foto salva no banco
 }
 
 function drawSparkline(values) {
@@ -335,16 +324,114 @@ function renderGoals() {
   document.getElementById('gauge-interactions-status').textContent = STATE.monthlyInteractions >= GOALS.interactions.super ? 'Supermeta batida!' : 'Faltam ' + fmt(GOALS.interactions.meta - STATE.monthlyInteractions);
 }
 
+// ---------- COMPARAÇÃO DE PERÍODOS ----------
+function sumInRange(rows, dateField, valueField, start, end) {
+  return rows.reduce(function (sum, r) {
+    var d = r[dateField];
+    if (!d) return sum;
+    return (d >= start && d <= end) ? sum + (r[valueField] ?? 0) : sum;
+  }, 0);
+}
+function followersGainedInRange(rows, start, end) {
+  var inRange = rows.filter(function (r) { return r.data >= start && r.data <= end; });
+  if (inRange.length < 1) return null;
+  return (inRange[inRange.length - 1].followers_count ?? 0) - (inRange[0].followers_count ?? 0);
+}
+function interactionsInRange(posts, start, end) {
+  return posts.reduce(function (sum, p) {
+    if (!p.posted_at) return sum;
+    var d = p.posted_at.slice(0, 10);
+    return (d >= start && d <= end) ? sum + engagementOf(p) : sum;
+  }, 0);
+}
+function computePeriod(start, end) {
+  return {
+    followers: followersGainedInRange(STATE.accountRows, start, end),
+    reach: sumInRange(STATE.accountRows, 'data', 'reach', start, end),
+    views: sumInRange(STATE.accountRows, 'data', 'views', start, end),
+    interactions: interactionsInRange(STATE.posts, start, end),
+  };
+}
+function deltaHtml(a, b) {
+  if (a === null || b === null || a === b) return '<span class="delta">—</span>';
+  var up = a > b;
+  return '<span class="delta ' + (up ? 'tri-up' : 'tri-down') + '">' + (up ? '▲' : '▽') + ' ' + fmt(Math.abs(a - b)) + '</span>';
+}
+function renderComparison(rangeA, rangeB) {
+  var A = computePeriod(rangeA.start, rangeA.end);
+  var B = computePeriod(rangeB.start, rangeB.end);
+  var rows = [
+    { label: 'Seguidores ganhos', a: A.followers, b: B.followers },
+    { label: 'Interações', a: A.interactions, b: B.interactions },
+    { label: 'Alcance total', a: A.reach, b: B.reach },
+    { label: 'Views totais', a: A.views, b: B.views },
+  ];
+  document.getElementById('compare-table').innerHTML =
+    '<tr><th></th><th style="text-align:right">Período A</th><th style="text-align:right">Período B</th></tr>' +
+    rows.map(function (r) {
+      return '<tr><td class="metric-name">' + r.label + '</td><td class="val">' + fmt(r.a) + '</td><td class="val">' + fmt(r.b) + ' ' + deltaHtml(r.a, r.b) + '</td></tr>';
+    }).join('');
+
+  var fd = (A.followers !== null && B.followers !== null) ? A.followers - B.followers : null;
+  var summaryEl = document.getElementById('compare-summary');
+  if (fd === null) summaryEl.textContent = 'Dados insuficientes para comparar esses períodos ainda.';
+  else if (fd > 0) summaryEl.textContent = 'O período A ganhou ' + fmt(fd) + ' seguidores a mais que o período B, com ' + fmt(A.interactions) + ' interações contra ' + fmt(B.interactions) + '.';
+  else if (fd < 0) summaryEl.textContent = 'O período A ganhou ' + fmt(Math.abs(fd)) + ' seguidores a menos que o período B, com ' + fmt(A.interactions) + ' interações contra ' + fmt(B.interactions) + '.';
+  else summaryEl.textContent = 'Os dois períodos tiveram o mesmo ganho de seguidores. Interações: ' + fmt(A.interactions) + ' contra ' + fmt(B.interactions) + '.';
+}
+function presetRange(preset) {
+  var today = new Date();
+  function shift(d, days) { var nd = new Date(d); nd.setDate(nd.getDate() + days); return nd; }
+  if (preset === 'week') {
+    var aEnd = today, aStart = shift(today, -6);
+    var bEnd = shift(aStart, -1), bStart = shift(bEnd, -6);
+    return { a: { start: isoDate(aStart), end: isoDate(aEnd) }, b: { start: isoDate(bStart), end: isoDate(bEnd) } };
+  }
+  if (preset === 'month') {
+    var aStart2 = new Date(today.getFullYear(), today.getMonth(), 1), aEnd2 = today;
+    var bEnd2 = shift(aStart2, -1), bStart2 = new Date(bEnd2.getFullYear(), bEnd2.getMonth(), 1);
+    return { a: { start: isoDate(aStart2), end: isoDate(aEnd2) }, b: { start: isoDate(bStart2), end: isoDate(bEnd2) } };
+  }
+}
+function setupComparisonControls() {
+  var buttons = document.querySelectorAll('.chip-btn');
+  var customInputs = document.getElementById('custom-range-inputs');
+  function applyCustom() {
+    var a = { start: document.getElementById('range-a-start').value, end: document.getElementById('range-a-end').value };
+    var b = { start: document.getElementById('range-b-start').value, end: document.getElementById('range-b-end').value };
+    if (a.start && a.end && b.start && b.end) renderComparison(a, b);
+  }
+  buttons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      buttons.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var preset = btn.getAttribute('data-preset');
+      if (preset === 'custom') { customInputs.style.display = 'flex'; applyCustom(); }
+      else { customInputs.style.display = 'none'; var r = presetRange(preset); renderComparison(r.a, r.b); }
+    });
+  });
+  ['range-a-start', 'range-a-end', 'range-b-start', 'range-b-end'].forEach(function (id) {
+    document.getElementById(id).addEventListener('change', applyCustom);
+  });
+  var r0 = presetRange('week');
+  renderComparison(r0.a, r0.b);
+}
+
+// ---------- POSTS E IMAGENS ----------
 function renderPostsGrid() {
   var grid = document.getElementById('posts-grid');
   if (!STATE.posts.length) return grid.innerHTML = '<div>Sem posts sincronizados.</div>';
   
   grid.innerHTML = STATE.posts.slice(0, 12).map(function (p, i) {
     var cap = (p.caption || 'Sem legenda').trim();
-    var imgUrl = getPostImage(p, i);
+    var imgUrl = getPostImage(p);
+    
+    var thumbContent = imgUrl 
+      ? '<div class="post-thumbnail" style="background-image: url(' + imgUrl + ');"></div>'
+      : '<div class="post-thumbnail">🍝</div>';
     
     return '<div class="post-chip" data-idx="' + i + '">' +
-      '<div class="post-thumbnail" style="background-image: url(' + imgUrl + ');"></div>' +
+      thumbContent +
       '<div class="p-date">' + fmtDate(p.posted_at) + '</div>' +
       '<div class="p-caption">' + cap + '</div>' +
       '<div class="p-eng">' + fmt(engagementOf(p)) + ' interações</div>' +
@@ -391,11 +478,14 @@ function renderPostSelection() {
   var panel = document.getElementById('comparison-panel');
   if (STATE.selectedPosts.length === 2) {
     document.getElementById('cmp-posts').innerHTML = STATE.selectedPosts.map(function (p, i) {
-      var realIdx = STATE.posts.indexOf(p);
-      var imgUrl = getPostImage(p, realIdx);
+      var imgUrl = getPostImage(p);
+      var thumbHtml = imgUrl 
+        ? '<div class="post-thumbnail" style="height:200px; background-image: url(' + imgUrl + ');"></div>'
+        : '<div class="post-thumbnail" style="height:200px;">🍝 Parmeca</div>';
+      
       return '<div class="cmp-post-card">' +
              '<div class="p-tag">POST ' + (i===0?'A':'B') + '</div>' +
-             '<div class="post-thumbnail" style="height:220px; background-image: url(' + imgUrl + ');"></div>' +
+             thumbHtml +
              '<div class="p-date">' + fmtDate(p.posted_at) + '</div>' +
              '<div style="font-size:14px; font-weight:500; color:var(--cream);">' + (p.caption||'') + '</div></div>';
     }).join('');
@@ -454,7 +544,11 @@ async function loadAll() {
   var resS = await supabaseClient.from('instagram_stories_insights').select('*').order('posted_at', { ascending: false }).limit(30);
   STATE.storiesRows = resS.data || [];
 
-  renderGoals(); renderPostsGrid(); renderStories();
+  renderGoals(); 
+  renderPostsGrid(); 
+  renderStories();
+  setupComparisonControls(); // Ativa e carrega o crescimento da conta instantaneamente
+  
   document.getElementById('last-updated').textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 }
 
